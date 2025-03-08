@@ -1,0 +1,53 @@
+import React from 'react'
+import LandingPage from './suby/pages/LandingPage'
+import { Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from './suby/context/ThemeContext'
+import { AuthProvider } from './suby/context/AuthContext'
+import TopBar from './suby/components/TopBar'
+import ProductMenu from './suby/components/ProductMenu'
+import OrderTracking from './suby/components/OrderTracking'
+import ProtectedRoute from './suby/components/ProtectedRoute'
+
+// Vendor Routes
+import VendorLogin from './suby/pages/vendor/VendorLogin'
+import VendorRegister from './suby/pages/vendor/VendorRegister'
+import VendorDashboard from './suby/pages/vendor/VendorDashboard'
+import AddRestaurant from './suby/pages/vendor/AddRestaurant'
+import EditRestaurant from './suby/pages/vendor/EditRestaurant'
+import RestaurantManagement from './suby/pages/vendor/RestaurantManagement'
+import AddMenuItem from './suby/pages/vendor/AddMenuItem'
+
+import './App.css'
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <TopBar />
+        <main>
+          <Routes>
+              {/* Customer Routes */}
+              <Route path='/' element={<LandingPage />} />
+              <Route path='/products/:firmId/:firmName' element={<ProductMenu />} />
+              <Route path='/order-tracking' element={<OrderTracking />} />
+              
+              {/* Public Vendor Routes */}
+              <Route path='/vendor/login' element={<VendorLogin />} />
+              <Route path='/vendor/register' element={<VendorRegister />} />
+              
+              {/* Protected Vendor Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path='/vendor/dashboard' element={<VendorDashboard />} />
+                <Route path='/vendor/restaurants/add' element={<AddRestaurant />} />
+                <Route path='/vendor/restaurants/:id' element={<RestaurantManagement />} />
+                <Route path='/vendor/restaurants/:id/edit' element={<EditRestaurant />} />
+                <Route path='/vendor/restaurants/:restaurantId/menu/add' element={<AddMenuItem />} />
+              </Route>
+          </Routes>
+        </main>
+      </ThemeProvider>
+    </AuthProvider>
+  )
+}
+
+export default App
