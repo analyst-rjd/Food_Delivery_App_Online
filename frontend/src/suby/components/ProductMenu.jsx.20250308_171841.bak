@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API_URL, fetchWithAuth } from '../api';
+import { API_URL } from '../api';
 import { menuData } from '../data/menuData';
 import { restaurantData } from '../data/restaurants';
 import { FaShoppingCart, FaPlus, FaMinus } from 'react-icons/fa';
@@ -36,26 +36,13 @@ const ProductMenu = () => {
                 
                 // Try to get data from API regardless of whether local data was found
                 try {
-                    // Use the new fetchWithAuth helper
-                    const data = await fetchWithAuth(`/api/restaurants/${firmId}`)
-                        .catch(async (error) => {
-                            console.error('Failed to fetch with helper function:', error);
-                            // Fallback to regular fetch with specific CORS options
-                            const response = await fetch(`${API_URL}/api/restaurants/${firmId}`, {
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                credentials: 'include',
-                                mode: 'cors'
-                            });
-                            
-                            if (!response.ok) {
-                                throw new Error(`API returned ${response.status}: ${response.statusText}`);
-                            }
-                            
-                            return await response.json();
-                        });
+                    const response = await fetch(`${API_URL}/api/restaurants/${firmId}`);
+                    if (!response.ok) {
+                        throw new Error(`API returned ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('ProductMenu: API returned restaurant data:', data);
                     
                     // Only proceed if we have valid data
                     if (data && data.name) {
@@ -65,21 +52,10 @@ const ProductMenu = () => {
                             
                             // Fetch items separately
                             try {
-                                // Use fetchWithAuth for items too
-                                const itemsData = await fetchWithAuth(`/api/items/restaurant/${firmId}`)
-                                    .catch(async () => {
-                                        const itemsResponse = await fetch(`${API_URL}/api/items/restaurant/${firmId}`, {
-                                            credentials: 'include',
-                                            mode: 'cors'
-                                        });
-                                        if (!itemsResponse.ok) {
-                                            throw new Error(`API returned ${itemsResponse.status}`);
-                                        }
-                                        return await itemsResponse.json();
-                                    });
-                                    
-                                if (itemsData) {
-
+                                const itemsResponse = await fetch(`${API_URL}/api/items/restaurant/${firmId}`);
+                                if (itemsResponse.ok) {
+                                    const itemsData = await itemsResponse.json();
+                                    data.items = itemsData;
                                     console.log('ProductMenu: Fetched items separately:', itemsData);
                                 }
                             } catch (itemsError) {

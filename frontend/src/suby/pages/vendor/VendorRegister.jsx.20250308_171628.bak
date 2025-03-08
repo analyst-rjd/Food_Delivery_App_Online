@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { API_URL, fetchWithAuth } from '../../api';
+import { API_URL } from '../../api';
 import '../../styles/vendor.css';
 
 const VendorRegister = () => {
@@ -51,28 +51,24 @@ const VendorRegister = () => {
     }
 
     try {
-      const vendorData = {
-        email,
-        password,
-        businessName,
-        phone,
-        address: {
-          street,
-          city,
-          state,
-          zipCode,
-          country
-        }
-      };
-      
-      // Use the API_URL directly here since we're not using fetchWithAuth for registration
       const response = await fetch(`${API_URL}/api/vendors/register`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(vendorData),
-        credentials: 'include'
+        body: JSON.stringify({
+          email,
+          password,
+          businessName,
+          phone,
+          address: {
+            street,
+            city,
+            state,
+            zipCode,
+            country
+          }
+        })
       });
 
       const data = await response.json();

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { API_URL, fetchWithAuth } from '../api';
+import { API_URL } from '../api';
 
 // Create context
 const AuthContext = createContext();
@@ -19,19 +19,17 @@ export const AuthProvider = ({ children }) => {
       if (savedToken && savedUser) {
         try {
           // Verify the token is still valid
-          try {
-            await fetchWithAuth('/api/vendors/me', {
-              headers: {
-                Authorization: `Bearer ${savedToken}`
-              }
-            });
-            
-            // If we get here, the token is valid
+          const response = await fetch(`${API_URL}/api/vendors/me`, {
+            headers: {
+              Authorization: `Bearer ${savedToken}`
+            }
+          });
+          
+          if (response.ok) {
             // Token is valid
             setToken(savedToken);
             setCurrentUser(JSON.parse(savedUser));
-          } catch (verifyError) {
-            console.error('Token verification failed:', verifyError);
+          } else {
             // Token is invalid, clear storage
             localStorage.removeItem('vendorToken');
             localStorage.removeItem('vendorInfo');
@@ -48,7 +46,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Login function
-  // Login function
   const login = async (email, password) => {
     try {
       const response = await fetch(`${API_URL}/api/vendors/login`, {
@@ -56,9 +53,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
-        mode: 'cors'
+        body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
@@ -91,7 +86,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Register function
-  // Register function
   const register = async (vendorData) => {
     try {
       const response = await fetch(`${API_URL}/api/vendors/register`, {
@@ -99,9 +93,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(vendorData),
-        credentials: 'include',
-        mode: 'cors'
+        body: JSON.stringify(vendorData)
       });
 
       const data = await response.json();

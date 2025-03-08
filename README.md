@@ -120,16 +120,95 @@ A full-stack food delivery application with a React frontend and Express/MongoDB
 - **Backend**: Express, Node.js, MongoDB, Mongoose, JWT, Multer
 - **Deployment**: Vercel (frontend), Render (backend)
 
+## Deployment Guide
+
+### Prerequisites
+
+- Node.js and npm installed
+- MongoDB Atlas account
+- Vercel account for frontend deployment
+- Render account for backend deployment
+
+### Backend Deployment (Render)
+
+1. **Create a new Web Service on Render**
+   - Sign up/login to [Render](https://render.com)
+   - Click "New" > "Web Service"
+   - Connect your GitHub repository or upload code directly
+   - Select the backend directory
+
+2. **Configure the Web Service**
+   - **Name**: food-delivery-app-backend (or your preferred name)
+   - **Runtime**: Node
+   - **Build Command**: `npm install`
+   - **Start Command**: `node server.js`
+   - **Plan**: Free (or paid for production)
+
+3. **Set Environment Variables**
+   - Click on "Environment" tab
+   - Add the following variables:
+     ```
+     NODE_ENV=production
+     MONGODB_URI=your_mongodb_connection_string
+     JWT_SECRET=your_secure_jwt_secret
+     CORS_ORIGIN=https://your-frontend-url.vercel.app
+     ```
+
+4. **Deploy the Service**
+   - Click "Create Web Service"
+   - Wait for the build and deployment to complete
+
+### Frontend Deployment (Vercel)
+
+1. **Create a new Project on Vercel**
+   - Sign up/login to [Vercel](https://vercel.com)
+   - Click "New Project"
+   - Import your GitHub repository or upload code directly
+   - Select the frontend directory
+
+2. **Configure the Project**
+   - **Framework Preset**: Vite
+   - **Root Directory**: frontend (if deploying from monorepo)
+   - **Build Command**: `npm run build`
+   - **Output Directory**: dist
+
+3. **Set Environment Variables**
+   - Go to "Settings" > "Environment Variables"
+   - Add the following variable:
+     ```
+     VITE_API_URL=https://your-backend-url.onrender.com
+     ```
+
+4. **Deploy the Project**
+   - Click "Deploy"
+   - Wait for the build and deployment to complete
+
+### MongoDB Setup
+
+1. **Create a MongoDB Atlas Cluster**
+   - Sign up/login to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+   - Create a new cluster (free tier works for development)
+   - Set up database access with a username and password
+   - Configure network access (allow access from anywhere for Render)
+
+2. **Get Your Connection String**
+   - Go to "Database" > "Connect" > "Connect your application"
+   - Copy the connection string
+   - Replace `<password>` with your database user's password
+   - Add your database name: `mongodb+srv://username:password@cluster.mongodb.net/food_delivery_app_prod?retryWrites=true&w=majority`
+
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Images not loading**: The application includes fallback placeholders for missing images.
+1. **CORS Issues**: Make sure the CORS_ORIGIN environment variable in your backend exactly matches your frontend URL
 
-2. **No data appears**: Try running the seed script (`npm run seed` in the backend directory) to populate the database with sample restaurants and menu items.
+2. **Images not loading**: The application includes fallback placeholders for missing images.
 
-3. **Connection issues**: Ensure both frontend and backend servers are running. The frontend automatically detects if it's running locally and uses the appropriate API URL.
+3. **No data appears**: Try running the seed script (`npm run seed` in the backend directory) to populate the database with sample restaurants and menu items.
 
-4. **API errors**: Check the browser console for specific error messages. Verify your MongoDB connection is working properly.
+4. **Connection issues**: Ensure both frontend and backend servers are running. The frontend automatically detects if it's running locally and uses the appropriate API URL.
 
-5. **Authentication problems**: Make sure the JWT_SECRET is set in your .env file. Check that the token is being properly stored in localStorage.
+5. **API errors**: Check the browser console for specific error messages. Verify your MongoDB connection is working properly.
+
+6. **Authentication problems**: Make sure the JWT_SECRET is set in your .env file. Check that the token is being properly stored in localStorage..

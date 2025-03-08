@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { API_URL } from '../api';
+import { API_URL, fetchWithAuth } from '../api';
 import { restaurantData as localRestaurantData } from '../data/restaurants';
 import ImageWithFallback from '../../components/common/ImageWithFallback';
 
@@ -23,12 +23,25 @@ const Chains = () => {
                 try {
                     console.log('Chains: Fetching restaurants from:', `${API_URL}/api/restaurants`);
                     
-                    const response = await fetch(`${API_URL}/api/restaurants`);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    
-                    const data = await response.json();
+                    // Use the new fetchWithAuth helper or fetch with CORS options
+                    const data = await fetchWithAuth('/api/restaurants')
+                        .catch(async () => {
+                            // Fallback to regular fetch with specific CORS options if fetchWithAuth fails
+                            const response = await fetch(`${API_URL}/api/restaurants`, {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                credentials: 'include',
+                                mode: 'cors'
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            
+                            return await response.json();
+                        });
                     console.log('Chains: API returned restaurants:', data);
                     
                     // Store API restaurants separately
