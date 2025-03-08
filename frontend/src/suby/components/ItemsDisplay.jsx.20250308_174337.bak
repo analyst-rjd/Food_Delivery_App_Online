@@ -5,44 +5,31 @@ import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft, FaTimes } from "reac
 import { Link } from 'react-router-dom';
 import { API_URL } from '../api';
 import ImageWithFallback from '../../components/common/ImageWithFallback';
-import './ItemsDisplay.css'; // Added for styling fixes
 
 const ItemsDisplay = () => {
-    // Initialize with local data first, then try to fetch from API
     const [displayItem, setDisplayItem] = useState(itemData)
     const [selectedItem, setSelectedItem] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchItems = async () => {
-            // Already have local data loaded initially
-            setLoading(true);
-            setError(null);
-            
             try {
-                console.log('Fetching items from API:', `${API_URL}/api/items`);
                 const response = await fetch(`${API_URL}/api/items`);
-                
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                
                 const data = await response.json();
-                console.log('API returned items:', data.length);
                 
                 // Transform backend data to match frontend expected structure
                 const transformedData = data.map(item => {
                     // Create proper image URL
                     let itemImage = item.image;
                     
-                    // If image is a placeholder URL or missing, replace with Unsplash food image
+                    // If image is a placeholder URL, replace with Unsplash food image
                     if (!itemImage || itemImage.includes('placeholder.com')) {
-                        // Use food-related Unsplash images with a fixed ID to avoid random loading
+                        // Use food-related Unsplash images
                         const foodTerms = ['food', 'dish', 'meal', 'cuisine'];
                         const searchTerm = item.category?.toLowerCase() || 'food';
-                        const randomSeed = item._id ? parseInt(item._id.substring(0, 8), 16) % 1000 : Math.floor(Math.random() * 1000);
-                        itemImage = `https://images.unsplash.com/photo-15${randomSeed < 100 ? '0' : ''}${randomSeed}674900247-0877df9cc836?w=300&h=300&fit=crop`;
+                        itemImage = `https://source.unsplash.com/featured/?${searchTerm},${foodTerms[Math.floor(Math.random() * foodTerms.length)]}`;
                     }
                     
                     return {
@@ -55,22 +42,11 @@ const ItemsDisplay = () => {
                     };
                 });
                 
-                // If we got data from API, merge it with local data to ensure we always have items
-                if (transformedData.length > 0) {
-                    console.log('Setting transformed API data:', transformedData.length, 'items');
-                    setDisplayItem(prev => {
-                        // Combine API items with local items, avoiding duplicates by name
-                        const existingNames = new Set(transformedData.map(item => item.name.toLowerCase()));
-                        const filteredLocalItems = itemData.filter(item => !existingNames.has(item.name.toLowerCase()));
-                        return [...transformedData, ...filteredLocalItems];
-                    });
-                }
+                setDisplayItem(transformedData);
             } catch (error) {
                 console.error("Failed to fetch items:", error);
-                setError(error.message);
-                // Already using local data by default, so no need to set it again
-            } finally {
-                setLoading(false);
+                // Use fallback data from itemData.js if API fails
+                setDisplayItem(itemData);
             }
         };
 
@@ -133,14 +109,11 @@ const ItemsDisplay = () => {
                 </button>
             </div>
             <div className="itemSection" id="itemGallery">
-                {loading && <div className="loading-indicator">Loading dishes...</div>}
-                {error && <div className="error-message">Error: {error}</div>}
-                
                 <div className="itemWrapper">
-                    {displayItem && displayItem.length > 0 ? displayItem.map((item) => (
+                    {displayItem.map((item) => (
                         <div 
                             className="gallery" 
-                            key={item.id || `item-${Math.random()}`}
+                            key={item.id}
                             onClick={() => setSelectedItem(item)}
                         >
                             <ImageWithFallback 
@@ -150,9 +123,7 @@ const ItemsDisplay = () => {
                             />
                             <p className="item-name">{item.name}</p>
                         </div>
-                    )) : (
-                        !loading && <div className="no-items">No dishes available</div>
-                    )}
+                    ))}
                 </div>
             </div>
 

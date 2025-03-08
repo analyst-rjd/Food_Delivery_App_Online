@@ -1,0 +1,139 @@
+/* ItemsDisplay.css */
+.itemSectionContainer {
+  margin: 2rem 0;
+}
+
+.itemWrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.gallery {
+  min-width: 150px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.gallery:hover {
+  transform: translateY(-5px);
+}
+
+.gallery img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.item-name {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.loading-indicator {
+  padding: 1rem;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.error-message {
+  padding: 1rem;
+  text-align: center;
+  color: #e53e3e;
+  background-color: #fff5f5;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.no-items {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  width: 100%;
+}
+
+/* Modal styling */
+.item-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 90%;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+.restaurants-list {
+  margin-top: 1rem;
+}
+
+.restaurant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+}
+
+.restaurant-item:last-child {
+  border-bottom: none;
+}
+
+.restaurant-info h4 {
+  margin: 0;
+  color: #333;
+}
+
+.restaurant-info p {
+  margin: 0.25rem 0 0;
+  color: #666;
+}
+
+.order-now-btn {
+  background-color: #FF5A5F;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.order-now-btn:hover {
+  background-color: #FF4448;
+}
