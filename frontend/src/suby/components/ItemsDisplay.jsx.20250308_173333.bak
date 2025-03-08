@@ -20,27 +20,14 @@ const ItemsDisplay = () => {
                 const data = await response.json();
                 
                 // Transform backend data to match frontend expected structure
-                const transformedData = data.map(item => {
-                    // Create proper image URL
-                    let itemImage = item.image;
-                    
-                    // If image is a placeholder URL, replace with Unsplash food image
-                    if (!itemImage || itemImage.includes('placeholder.com')) {
-                        // Use food-related Unsplash images
-                        const foodTerms = ['food', 'dish', 'meal', 'cuisine'];
-                        const searchTerm = item.category?.toLowerCase() || 'food';
-                        itemImage = `https://source.unsplash.com/featured/?${searchTerm},${foodTerms[Math.floor(Math.random() * foodTerms.length)]}`;
-                    }
-                    
-                    return {
-                        id: item._id,
-                        name: item.name,
-                        description: item.description,
-                        price: item.price,
-                        item_img: itemImage,
-                        category: item.category
-                    };
-                });
+                const transformedData = data.map(item => ({
+                    id: item._id,
+                    name: item.name,
+                    description: item.description,
+                    price: item.price,
+                    item_img: item.image || 'https://via.placeholder.com/150',
+                    category: item.category
+                }));
                 
                 setDisplayItem(transformedData);
             } catch (error) {
