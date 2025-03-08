@@ -3,4 +3,4 @@ const isLocalDev = window.location.hostname === 'localhost' || window.location.h
 
 export const API_URL = isLocalDev 
   ? "http://localhost:5000"
-  : "https://food-delivery-app-2-lcbi.onrender.com";
+  : "https://food-delivery-app-online.onrender.com";
